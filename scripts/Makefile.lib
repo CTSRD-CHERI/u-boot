@@ -327,7 +327,7 @@ cmd_dtc = mkdir -p $(dir ${dtc-tmp}) ; \
 		(echo "Check $(shell pwd)/$(pre-tmp) for errors" && false) \
 		; \
 	cat $(depfile).pre.tmp $(depfile).dtc.tmp > $(depfile) ; \
-	sed -i "s:$(pre-tmp):$(<):" $(depfile)
+	gsed -i "s:$(pre-tmp):$(<):" $(depfile)
 
 $(obj)/%.dtb: $(src)/%.dts FORCE
 	$(call if_changed_dep,dtc)

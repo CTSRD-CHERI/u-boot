@@ -1,0 +1,13 @@
+if ARCH_BHYVE
+
+config SYS_VENDOR
+	default "emulation"
+
+config SYS_BOARD
+	default "bhyve-arm"
+
+config SYS_CONFIG_NAME
+	default "bhyve-arm64"
+
+endif
+

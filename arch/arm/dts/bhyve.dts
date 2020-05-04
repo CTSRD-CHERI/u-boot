@@ -1,0 +1,84 @@
+/dts-v1/;
+
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+#include <dt-bindings/interrupt-controller/irq.h>
+
+/ {
+	compatible = "freebsd,bhyve";
+
+	interrupt-parent = <&gic>;
+	#address-cells = <2>;
+	#size-cells = <2>;
+
+	chosen {
+		stdout-path = &uart0;
+	};
+
+	aliases {
+		serial0 = &uart0;
+	};
+
+	memory {
+		reg = <0x1 0x0 0x0 0x40000000>;
+	};
+
+	cpus {
+		#address-cells = <2>;
+		#size-cells = <0>;
+
+		cpu_l0: cpu@0 {
+			device_type = "cpu";
+			compatible = "arm,armv8";
+			reg = <0x0 0x0>;
+			enable-method = "psci";
+		};
+	};
+
+	psci {
+		compatible = "arm,psci-1.0";
+		method = "hvc";
+	};
+
+	timer {
+		compatible = "arm,armv8-timer";
+		interrupt-parent = <&gic>;
+		interrupts = <GIC_PPI 13 IRQ_TYPE_LEVEL_LOW 0>,
+			     <GIC_PPI 14 IRQ_TYPE_LEVEL_LOW 0>;
+	};
+
+	gic: interrupt-controller@2f000000 {
+		compatible = "arm,gic-v3";
+		#interrupt-cells = <4>;
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+		interrupt-controller;
+		reg = <0x0 0x2f000000 0x0 0x10000>,	/* GICD */
+		      <0x0 0x2f100000 0x0 0x200000>;	/* GICR */
+
+		its: interrupt-controller@2f000000 {
+			compatible = "arm,gic-v3-its";
+			msi-controller;
+			#msi-cells = <1>;
+			reg = <0x0 0x2f300000 0x0 0x10000>;
+		};
+	};
+
+	uart0: serial@10000 {
+		compatible = "ns16550";
+		reg = <0x0 0x10000 0x0 0x1000>;
+		reg-shift = <2>;
+		reg-io-width = <4>;
+	};
+
+	pcie@1f0000000 {
+		compatible = "pci-host-ecam-generic";
+		#address-cells = <3>;
+		#size-cells = <2>;
+		device_type = "pci";
+		reg = <0x0 0xe0000000 0x0 0x10000000>;
+		ranges = <0x01000000 0x0 0xdf000000 0x0 0xdf000000 0x0 0x01000000>,
+		         <0x02000000 0x0 0xa0000000 0x0 0xa0000000 0x0 0x3f000000>;
+		msi-map = <0x0 &its 0x0 0x10000>;
+	};
+};

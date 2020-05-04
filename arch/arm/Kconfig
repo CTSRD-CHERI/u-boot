@@ -728,6 +728,11 @@ config TARGET_BCMNS2
 	  ARMv8 Cortex-A57 processors targeting a broad range of networking
 	  applications.
 
+config ARCH_BHYVE
+	bool "Support FreeBSD bhyve"
+	select ARM64
+	select DM
+
 config ARCH_EXYNOS
 	bool "Samsung EXYNOS"
 	select DM
@@ -1752,6 +1757,8 @@ source "arch/arm/mach-bcm283x/Kconfig"
 
 source "arch/arm/mach-bcmstb/Kconfig"
 
+source "arch/arm/mach-bhyve/Kconfig"
+
 source "arch/arm/mach-davinci/Kconfig"
 
 source "arch/arm/mach-exynos/Kconfig"
@@ -1866,6 +1873,7 @@ source "board/broadcom/bcmns2/Kconfig"
 source "board/cavium/thunderx/Kconfig"
 source "board/cirrus/edb93xx/Kconfig"
 source "board/eets/pdu001/Kconfig"
+source "board/emulation/bhyve-arm/Kconfig"
 source "board/emulation/qemu-arm/Kconfig"
 source "board/freescale/ls2080a/Kconfig"
 source "board/freescale/ls2080aqds/Kconfig"

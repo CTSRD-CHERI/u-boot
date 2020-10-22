@@ -11,7 +11,8 @@
 	#size-cells = <2>;
 
 	chosen {
-		stdout-path = &uart0;
+		bootargs = "earlycon";
+		stdout-path = "serial0:115200n8";
 	};
 
 	aliases {
@@ -42,33 +43,33 @@
 	timer {
 		compatible = "arm,armv8-timer";
 		interrupt-parent = <&gic>;
-		interrupts = <GIC_PPI 13 IRQ_TYPE_LEVEL_LOW 0>,
-			     <GIC_PPI 14 IRQ_TYPE_LEVEL_LOW 0>;
+		interrupts = <GIC_PPI 13 IRQ_TYPE_LEVEL_LOW>,
+			     <GIC_PPI 14 IRQ_TYPE_LEVEL_LOW>;
 	};
 
 	gic: interrupt-controller@2f000000 {
 		compatible = "arm,gic-v3";
-		#interrupt-cells = <4>;
-		#address-cells = <2>;
-		#size-cells = <2>;
-		ranges;
-		interrupt-controller;
 		reg = <0x0 0x2f000000 0x0 0x10000>,	/* GICD */
 		      <0x0 0x2f100000 0x0 0x200000>;	/* GICR */
+		#interrupt-cells = <3>;
+		interrupt-controller;
+		mbi-ranges = <256 64>;
+		msi-controller;
+	};
 
-		its: interrupt-controller@2f000000 {
-			compatible = "arm,gic-v3-its";
-			msi-controller;
-			#msi-cells = <1>;
-			reg = <0x0 0x2f300000 0x0 0x10000>;
-		};
+	uart0_refclk: uart-clock {
+		compatible = "fixed-clock";
+		clock-output-names = "clk24mhz";
+		#clock-cells = <0>;
+		clock-frequency = <24000000>;
 	};
 
 	uart0: serial@10000 {
-		compatible = "ns16550";
+		compatible = "arm,pl011", "arm,primecell";
 		reg = <0x0 0x10000 0x0 0x1000>;
-		reg-shift = <2>;
-		reg-io-width = <4>;
+		interrupts = <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>;
+		clocks = <&uart0_refclk>, <&uart0_refclk>;
+		clock-names = "uartclk", "apb_pclk";
 	};
 
 	pcie@1f0000000 {
@@ -79,6 +80,6 @@
 		reg = <0x0 0xe0000000 0x0 0x10000000>;
 		ranges = <0x01000000 0x0 0xdf000000 0x0 0xdf000000 0x0 0x01000000>,
 		         <0x02000000 0x0 0xa0000000 0x0 0xa0000000 0x0 0x3f000000>;
-		msi-map = <0x0 &its 0x0 0x10000>;
+		msi-map = <0x0 &gic 0x0 0x10000>;
 	};
 };

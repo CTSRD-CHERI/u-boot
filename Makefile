@@ -891,7 +891,8 @@ cmd_static_rela =
 endif
 
 # Always append INPUTS so that arch config.mk's can add custom ones
-INPUTS-y += u-boot.srec u-boot.bin u-boot.sym System.map binary_size_check
+INPUTS-y += u-boot.bin u-boot.sym System.map binary_size_check
+INPUTS-$(CONFIG_SREC) += u-boot.srec
 
 INPUTS-$(CONFIG_ONENAND_U_BOOT) += u-boot-onenand.bin
 ifeq ($(CONFIG_SPL_FSL_PBL),y)
@@ -983,9 +984,15 @@ CHECKFLAGS += $(if $(CONFIG_CPU_BIG_ENDIAN),-mbig-endian,-mlittle-endian)
 # the checker needs the correct machine size
 CHECKFLAGS += $(if $(CONFIG_64BIT),-m64,-m32)
 
+ifeq ($(CONFIG_GAP_FILL),y)
+OBJCOPYFLAGS_GAP_FILL = --gap-fill=0xff
+else
+OBJCOPYFLAGS_GAP_FILL =
+endif
+
 # Normally we fill empty space with 0xff
 quiet_cmd_objcopy = OBJCOPY $@
-cmd_objcopy = $(OBJCOPY) --gap-fill=0xff $(OBJCOPYFLAGS) \
+cmd_objcopy = $(OBJCOPY) $(OBJCOPYFLAGS_GAP_FILL) $(OBJCOPYFLAGS) \
 	$(OBJCOPYFLAGS_$(@F)) $< $@
 
 # Provide a version which does not do this, for use by EFI
@@ -1494,7 +1501,7 @@ endif
 
 ifeq ($(CONFIG_ARM64),y)
 OBJCOPYFLAGS_u-boot-rockchip.bin = -I binary -O binary \
-	--pad-to=$(CONFIG_SPL_PAD_TO) --gap-fill=0xff
+	--pad-to=$(CONFIG_SPL_PAD_TO) $(OBJCOPYFLAGS_GAP_FILL)
 u-boot-rockchip.bin: idbloader.img u-boot.itb FORCE
 	$(call if_changed,pad_cat)
 endif # CONFIG_ARM64
@@ -1578,7 +1585,7 @@ spl/u-boot-spl.img: spl/u-boot-spl.bin FORCE
 	$(call if_changed,mkimage)
 
 OBJCOPYFLAGS_u-boot.spr = -I binary -O binary --pad-to=$(CONFIG_SPL_PAD_TO) \
-			  --gap-fill=0xff
+			  $(OBJCOPYFLAGS_GAP_FILL)
 u-boot.spr: spl/u-boot-spl.img u-boot.img FORCE
 	$(call if_changed,pad_cat)
 
@@ -1684,7 +1691,7 @@ endif
 endif
 
 OBJCOPYFLAGS_u-boot-with-spl-pbl.bin = -I binary -O binary --pad-to=$(CONFIG_SPL_PAD_TO) \
-			  --gap-fill=0xff
+			  $(OBJCOPYFLAGS_GAP_FILL)
 
 u-boot-with-spl-pbl.bin: spl/u-boot-spl.pbl $(UBOOT_BINLOAD) FORCE
 	$(call if_changed,pad_cat)
@@ -1696,7 +1703,7 @@ u-boot-with-spl-pbl.bin: spl/u-boot-spl.pbl $(UBOOT_BINLOAD) FORCE
 # the SPL image to the end.
 
 OBJCOPYFLAGS_u-boot-img-spl-at-end.bin := -I binary -O binary \
-	--pad-to=$(CONFIG_UBOOT_PAD_TO) --gap-fill=0xff
+	--pad-to=$(CONFIG_UBOOT_PAD_TO) $(OBJCOPYFLAGS_GAP_FILL)
 u-boot-img-spl-at-end.bin: u-boot.img spl/u-boot-spl.bin FORCE
 	$(call if_changed,pad_cat)
 

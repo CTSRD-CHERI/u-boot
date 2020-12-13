@@ -760,6 +760,21 @@ config ARCH_FIXUP_FDT_MEMORY
 	  used for booting OS with different memory setup where the part of
 	  the memory location should be used for different purpose.
 
+config SREC
+	bool "Enable building Motorola S-Record images"
+	default y
+	help
+	  This requires objcopy to support -O srec, present in binutils but not
+	  some other implementations.
+
+config GAP_FILL
+	bool "Fill empty space with 0xff"
+	default y
+	help
+	  Fill empty space in binary output files with 0xff. This requires
+	  objcopy to support --gap-fill, present in binutils but not some other
+	  implementations.
+
 endmenu		# Boot images
 
 source "api/Kconfig"

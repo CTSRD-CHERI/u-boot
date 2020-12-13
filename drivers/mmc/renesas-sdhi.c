@@ -22,6 +22,8 @@
 #include <asm/unaligned.h>
 #include "tmio-common.h"
 
+DECLARE_GLOBAL_DATA_PTR;
+
 #if CONFIG_IS_ENABLED(MMC_UHS_SUPPORT) || \
     CONFIG_IS_ENABLED(MMC_HS200_SUPPORT) || \
     CONFIG_IS_ENABLED(MMC_HS400_SUPPORT)
@@ -951,12 +953,12 @@ static void renesas_sdhi_filter_caps(struct udevice *dev)
 		priv->read_poll_flag = TMIO_SD_DMA_INFO1_END_RD2;
 }
 
+
 static int renesas_sdhi_probe(struct udevice *dev)
 {
 	struct tmio_sd_priv *priv = dev_get_priv(dev);
 	u32 quirks = dev_get_driver_data(dev);
 	struct fdt_resource reg_res;
-	DECLARE_GLOBAL_DATA_PTR;
 	int ret;
 
 	priv->clk_get_rate = renesas_sdhi_clk_get_rate;

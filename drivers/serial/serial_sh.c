@@ -292,7 +292,6 @@ static struct uart_port sh_sci = {
 
 static void sh_serial_setbrg(void)
 {
-	DECLARE_GLOBAL_DATA_PTR;
 	struct uart_port *port = &sh_sci;
 
 	sh_serial_setbrg_generic(port, CONFIG_SH_SCIF_CLK_FREQ, gd->baudrate);

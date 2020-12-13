@@ -10,6 +10,10 @@ int __weak checkboard(void)
 	return 0;
 }
 
+#ifdef CONFIG_OF_CONTROL
+DECLARE_GLOBAL_DATA_PTR;
+#endif
+
 /*
  * If the root node of the DTB has a "model" property, show it.
  * Then call checkboard().
@@ -17,7 +21,6 @@ int __weak checkboard(void)
 int __weak show_board_info(void)
 {
 #ifdef CONFIG_OF_CONTROL
-	DECLARE_GLOBAL_DATA_PTR;
 	const char *model;
 
 	model = fdt_getprop(gd->fdt_blob, 0, "model", NULL);

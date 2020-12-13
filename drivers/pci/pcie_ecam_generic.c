@@ -13,6 +13,8 @@
 
 #include <asm/io.h>
 
+DECLARE_GLOBAL_DATA_PTR;
+
 /**
  * struct generic_ecam_pcie - generic_ecam PCIe controller state
  * @cfg_base: The base address of memory mapped configuration space
@@ -126,7 +128,6 @@ static int pci_generic_ecam_ofdata_to_platdata(struct udevice *dev)
 {
 	struct generic_ecam_pcie *pcie = dev_get_priv(dev);
 	struct fdt_resource reg_res;
-	DECLARE_GLOBAL_DATA_PTR;
 	int err;
 
 	err = fdt_get_resource(gd->fdt_blob, dev_of_offset(dev), "reg",

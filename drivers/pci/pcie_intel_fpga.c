@@ -14,6 +14,8 @@
 #include <linux/bitops.h>
 #include <linux/delay.h>
 
+DECLARE_GLOBAL_DATA_PTR;
+
 #define RP_TX_REG0			0x2000
 #define RP_TX_CNTRL			0x2004
 #define RP_TX_SOP			BIT(0)
@@ -385,8 +387,6 @@ static int pcie_intel_fpga_ofdata_to_platdata(struct udevice *dev)
 	struct fdt_resource reg_res;
 	int node = dev_of_offset(dev);
 	int ret;
-
-	DECLARE_GLOBAL_DATA_PTR;
 
 	ret = fdt_get_named_resource(gd->fdt_blob, node, "reg", "reg-names",
 				     "Cra", &reg_res);

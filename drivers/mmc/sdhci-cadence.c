@@ -17,6 +17,8 @@
 #include <mmc.h>
 #include <sdhci.h>
 
+DECLARE_GLOBAL_DATA_PTR;
+
 /* HRS - Host Register Set (specific to Cadence) */
 #define SDHCI_CDNS_HRS04		0x10		/* PHY access port */
 #define   SDHCI_CDNS_HRS04_ACK			BIT(26)
@@ -253,7 +255,6 @@ static int sdhci_cdns_bind(struct udevice *dev)
 
 static int sdhci_cdns_probe(struct udevice *dev)
 {
-	DECLARE_GLOBAL_DATA_PTR;
 	struct mmc_uclass_priv *upriv = dev_get_uclass_priv(dev);
 	struct sdhci_cdns_plat *plat = dev_get_platdata(dev);
 	struct sdhci_host *host = dev_get_priv(dev);

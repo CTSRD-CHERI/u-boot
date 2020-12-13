@@ -12,6 +12,8 @@
 #include <pci.h>
 #include <asm/io.h>
 
+DECLARE_GLOBAL_DATA_PTR;
+
 /**
  * struct phytium_pcie - phytium PCIe controller state
  * @cfg_base: The base address of memory mapped configuration space
@@ -160,8 +162,6 @@ static int pci_phytium_ofdata_to_platdata(struct udevice *dev)
 {
 	struct phytium_pcie *pcie = dev_get_priv(dev);
 	struct fdt_resource reg_res;
-
-	DECLARE_GLOBAL_DATA_PTR;
 
 	int err;
 

@@ -829,7 +829,10 @@ u-boot-main := $(libs-y)
 ifeq ($(CONFIG_USE_PRIVATE_LIBGCC),y)
 PLATFORM_LIBGCC = arch/$(ARCH)/lib/lib.a
 else
-PLATFORM_LIBGCC := -L $(shell dirname `$(CC) $(c_flags) -print-libgcc-file-name`) -lgcc
+libgcc_file_name := $(shell $(CC) $(c_flags) -print-libgcc-file-name)
+libgcc_dirname := $(shell dirname $(libgcc_file_name))
+libgcc_basename := $(shell basename $(libgcc_file_name))
+PLATFORM_LIBGCC := -L $(libgcc_dirname) -l$(patsubst lib%.a,%,$(libgcc_basename))
 endif
 PLATFORM_LIBS += $(PLATFORM_LIBGCC)
 

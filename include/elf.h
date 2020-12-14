@@ -360,6 +360,15 @@ typedef struct {
 	Elf32_Half	st_shndx;	/* section header index */
 } Elf32_Sym;
 
+typedef struct {
+	Elf64_Word	st_name;	/* name - index into string table */
+	unsigned char	st_info;	/* type and binding */
+	unsigned char	st_other;	/* 0 - no defined meaning */
+	Elf64_Half	st_shndx;	/* section header index */
+	Elf64_Addr	st_value;	/* symbol value */
+	Elf64_Xword	st_size;	/* symbol size */
+} Elf64_Sym;
+
 /* Symbol table index */
 #define STN_UNDEF	0		/* undefined */
 
@@ -368,6 +377,11 @@ typedef struct {
 #define ELF32_ST_TYPE(x)	(((unsigned int) x) & 0xf)
 #define ELF32_ST_INFO(b,t)	(((b) << 4) + ((t) & 0xf))
 #define ELF32_ST_VISIBILITY(x)	((x) & 0x3)
+
+#define ELF64_ST_BIND(x)	((x) >> 4)
+#define ELF64_ST_TYPE(x)	(((unsigned int) x) & 0xf)
+#define ELF64_ST_INFO(b,t)	(((b) << 4) + ((t) & 0xf))
+#define ELF64_ST_VISIBILITY(x)	((x) & 0x3)
 
 /* Symbol Binding - ELF32_ST_BIND - st_info */
 #define STB_LOCAL	0		/* Local symbol */

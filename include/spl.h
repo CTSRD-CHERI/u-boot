@@ -15,6 +15,8 @@
 #include <asm/spl.h>
 #include <handoff.h>
 
+DECLARE_GLOBAL_DATA_PTR;
+
 struct blk_desc;
 struct image_header;
 
@@ -114,8 +116,6 @@ static inline enum u_boot_phase spl_phase(void)
 #elif CONFIG_SPL_BUILD
 	return PHASE_SPL;
 #else
-	DECLARE_GLOBAL_DATA_PTR;
-
 	if (!(gd->flags & GD_FLG_RELOC))
 		return PHASE_BOARD_F;
 	else

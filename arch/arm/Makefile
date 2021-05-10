@@ -18,7 +18,8 @@ arch-$(CONFIG_CPU_V7A)		=$(call cc-option, -march=armv7-a, \
 				 $(call cc-option, -march=armv7))
 arch-$(CONFIG_CPU_V7M)		=-march=armv7-m
 arch-$(CONFIG_CPU_V7R)		=-march=armv7-r
-arch-$(CONFIG_ARM64)		=-march=armv8-a
+# This is now provided by a wrapper as it needs to be -march=morello or -march=armv8-a??
+#arch-$(CONFIG_ARM64)		=-march=armv8-a
 
 # On Tegra systems we must build SPL for the armv4 core on the device
 # but otherwise we can use the value in CONFIG_SYS_ARM_ARCH

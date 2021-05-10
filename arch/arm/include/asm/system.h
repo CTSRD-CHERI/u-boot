@@ -49,9 +49,19 @@
 #define SPSR_EL_M_EL2H		(9)       /* Exception taken from EL2h mode   */
 
 /*
+ * CPTR_EL3 bits
+ */
+
+#define CPTR_EL3_EC (1 << 9)
+
+/*
  * CPTR_EL2 bits definitions
  */
 #define CPTR_EL2_RES1		(3 << 12 | 0x3ff)           /* Reserved, RES1 */
+
+#define CPTR_CEN (0b11U << 18)
+#define CPTR_CEN_LO (1U << 18)
+#define CPTR_CEN_HI (1U << 19)
 
 /*
  * SCTLR_EL2 bits definitions

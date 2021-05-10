@@ -84,7 +84,7 @@ __secondary_boot_func:
 #ifdef CONFIG_ARMV8_SWITCH_TO_EL1
 	adr	x5, 3f
 	switch_el x7, 0f, _dead_loop, _dead_loop
-0:	armv8_switch_to_el2_m x5, x6, x7
+0:	armv8_switch_to_el2_m x5, x6, x7, c7
 #endif
 3:
 	ldr	x7, [x11, #24]	/* ARCH_COMP */
@@ -93,10 +93,10 @@ __secondary_boot_func:
 4:
 #ifdef CONFIG_ARMV8_SWITCH_TO_EL1
 	switch_el x7, _dead_loop, 0f, _dead_loop
-0:	armv8_switch_to_el1_m x4, x6, x7
+0:	armv8_switch_to_el1_m x4, x6, x7, c7
 #else
 	switch_el x7, 0f, _dead_loop, _dead_loop
-0:	armv8_switch_to_el2_m x4, x6, x7
+0:	armv8_switch_to_el2_m x4, x6, x7, c7
 #endif
 
 _dead_loop:

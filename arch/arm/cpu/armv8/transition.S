@@ -28,7 +28,7 @@ ENTRY(armv8_switch_to_el2)
 	 * address saved in x4.
 	 */
 	br x4
-1:	armv8_switch_to_el2_m x4, x5, x6
+1:	armv8_switch_to_el2_m x4, x5, x6, c6
 ENDPROC(armv8_switch_to_el2)
 .popsection
 

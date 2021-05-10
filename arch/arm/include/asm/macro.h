@@ -146,13 +146,15 @@ lr	.req	x30
  * @flag:   The execution state flag for lower exception
  *          level, ES_TO_AARCH64 or ES_TO_AARCH32
  * @tmp:    temporary register
+ * @ctmp:   temporary capability register
  *
  * For loading 32-bit OS, x1 is machine nr and x2 is ftaddr.
  * For loading 64-bit OS, x0 is physical address to the FDT blob.
  * They will be passed to the guest.
  */
-.macro armv8_switch_to_el2_m, ep, flag, tmp
-	msr	cptr_el3, xzr		/* Disable coprocessor traps to EL3 */
+.macro armv8_switch_to_el2_m, ep, flag, tmp, ctmp
+        mov     \tmp, CPTR_EL3_EC
+	msr     cptr_el3, \tmp		/* Disable coprocessor traps to EL3, enable Morello */
 	mov	\tmp, #CPTR_EL2_RES1
 	msr	cptr_el2, \tmp		/* Disable coprocessor traps to EL2 */
 
@@ -204,7 +206,8 @@ lr	.req	x30
 			SPSR_EL_IRQ_MASK | SPSR_EL_FIQ_MASK |\
 			SPSR_EL_M_AARCH64 | SPSR_EL_M_EL2H)
 	msr	spsr_el3, \tmp
-	msr	elr_el3, \ep
+        cvtd    \ctmp, \ep
+	msr	celr_el3, \ctmp
 	eret
 
 1:
@@ -223,7 +226,8 @@ lr	.req	x30
 			SPSR_EL_T_A32 | SPSR_EL_M_AARCH32 |\
 			SPSR_EL_M_HYP)
 	msr	spsr_el3, \tmp
-	msr     elr_el3, \ep
+        cvtd    \ctmp, \ep
+	msr	celr_el3, \ctmp
 	eret
 .endm
 
@@ -238,7 +242,7 @@ lr	.req	x30
  * For loading 64-bit OS, x0 is physical address to the FDT blob.
  * They will be passed to the guest.
  */
-.macro armv8_switch_to_el1_m, ep, flag, tmp
+.macro armv8_switch_to_el1_m, ep, flag, tmp, ctmp
 	/* Initialize Generic Timers */
 	mrs	\tmp, cnthctl_el2
 	/* Enable EL1 access to timers */
@@ -257,8 +261,8 @@ lr	.req	x30
 	mov	\tmp, #CPTR_EL2_RES1
 	msr	cptr_el2, \tmp		/* Disable coprocessor traps to EL2 */
 	msr	hstr_el2, xzr		/* Disable coprocessor traps to EL2 */
-	mov	\tmp, #CPACR_EL1_FPEN_EN
-	msr	cpacr_el1, \tmp		/* Enable FP/SIMD at EL1 */
+	mov	\tmp, #(CPACR_EL1_FPEN_EN | CPTR_CEN)
+	msr	cpacr_el1, \tmp		/* Enable FP/SIMD and caps at EL1 */
 
 	/* SCTLR_EL1 initialization
 	 *

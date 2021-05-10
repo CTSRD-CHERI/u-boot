@@ -106,7 +106,8 @@ pie_fixup_done:
 	mrs	x0, scr_el3
 	orr	x0, x0, #0xf			/* SCR_EL3.NS|IRQ|FIQ|EA */
 	msr	scr_el3, x0
-	msr	cptr_el3, xzr			/* Enable FP/SIMD */
+	mov x0, CPTR_EL3_EC
+    msr cptr_el3, x0			/* Enable FP/SIMD/CHERI */
 #ifdef COUNTER_FREQUENCY
 	ldr	x0, =COUNTER_FREQUENCY
 	msr	cntfrq_el0, x0			/* Initialize CNTFRQ */
@@ -117,7 +118,7 @@ pie_fixup_done:
 	msr	cptr_el2, x0			/* Enable FP/SIMD */
 	b	0f
 1:	set_vbar	vbar_el1, x0
-	mov	x0, #3 << 20
+	mov	x0, #((3 << 20) | CPTR_CEN)
 	msr	cpacr_el1, x0			/* Enable FP/SIMD */
 0:
 	isb

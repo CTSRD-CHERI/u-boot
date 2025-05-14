@@ -40,6 +40,9 @@ config TARGET_SIFIVE_UNMATCHED
 	bool "Support SiFive Unmatched Board"
 	select SYS_CACHE_SHIFT_6
 
+config TARGET_OPENHWGROUP_CVA6_GENESYSII
+	bool "Target cva6 architecture on genesysII board"
+
 config TARGET_SIPEED_MAIX
 	bool "Support Sipeed Maix Board"
 	select SYS_CACHE_SHIFT_6
@@ -107,6 +110,7 @@ source "board/spacemit/bananapi-f3/Kconfig"
 source "board/starfive/visionfive2/Kconfig"
 source "board/thead/th1520_lpi4a/Kconfig"
 source "board/xilinx/mbv/Kconfig"
+source "board/openhwgroup/cva6_genesysII/Kconfig"
 
 # platform-specific options below
 source "arch/riscv/cpu/andes/Kconfig"
